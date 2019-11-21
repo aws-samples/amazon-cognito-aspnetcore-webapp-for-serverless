@@ -6,18 +6,18 @@ The steps in this module will walk you through setting up the [Visual Code](http
 In this step, we will create a Linux Machine for executing the lab steps. The Linux will have installed:
 - The AWSCLI 
 - The AWS [SAM CLI](https://github.com/awslabs/aws-sam-cli)
-- The Long Term Support (LTS) [.NET Core](https://dotnet.microsoft.com/platform/support/policy/dotnet-core) version supported by [AWS Lambda for .NET Core](https://github.com/aws/aws-lambda-dotnet) at the time this Lab was conceived v2.1.8.
+- The Long Term Support (LTS) [.NET Core](https://dotnet.microsoft.com/platform/support/policy/dotnet-core) v2.1.8. This version is the current supported LTS version by [AWS Lambda for .NET Core](https://github.com/aws/aws-lambda-dotnet).
  - :notebook: **Note:** It is possible to execute non-LTS .NET Core on AWS, as per this [blog](https://aws.amazon.com/blogs/developer/announcing-amazon-lambda-runtimesupport/). For simplicity, this workshop is based on the LTS .NET Core version.
 
 ---
 
-1. Download the **[devbox.yml](../cfn-templates/devbox.yml)** located at *serverless-aspnet-donet-cognito/cfn-templates*
+1. Download the [devbox.yml](../cfn-templates/devbox.yml) located at *serverless-aspnet-donet-cognito/cfn-templates*
 2. Log into the [CloudFormation Management Console](https://console.aws.amazon.com/cloudformation/home).
 3. Select **Create stack** with the *With new resources* option.
 4. Click *Upload a template file*, and then **Choose file** and select the **devbox.yml**
 5. Click *Next*.
 
-:notebook: **Note**: For this workshop use something like *<first initial> + <last initial> + -dotnetcore-devbox*. For John Smith: js-dotnetcore-devbox
+:notebook: **Note**: For this workshop use something like *first initial* + *last initial* + *-dotnetcore-devbox*. For John Smith: js-dotnetcore-devbox
 
 6. Give the **Stack name** a name based on the suggestion above. Select a key-pair and leave all the other fields with the default values. If you don't have any Ec2 key-pair available [Create-your-key-pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair), and repeat this step.
 7. Click Next twice. Don't forget to check the checkbox for **I acknowledge that AWS CloudFormation might create IAM resources.** as the cloudformation creates a role for the EC2 instance.
