@@ -1,0 +1,209 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  InstanceType:
+    Description: Developer EC2 instance type
+    Type: String
+    Default: t3.medium
+    AllowedValues: [t2.medium, t2.large, t3.medium, t3.large]
+    ConstraintDescription: must be a valid EC2 instance type.
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    Default: 0.0.0.0/0
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  LatestAmiId:
+    Type:  'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  VpcCIDR:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 172.17.0.0/16
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 172.17.2.0/24
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: DotNet-Workshop
+Resources:
+  S3Deploy:
+    Type: AWS::S3::Bucket
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet1CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Routes
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Sid: ''
+      Path: /
+      Policies:
+        - 
+          PolicyName: InstanceS3InstancePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action: 's3:*'
+                Resource: 
+                  - !GetAtt S3Deploy.Arn
+                  - !Sub "arn:aws:s3:::${S3Deploy}/*"
+        - 
+          PolicyName: IAMRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action: 
+                  - 'iam:CreateRole'
+                  - 'iam:AttachRolePolicy'
+                  - 'iam:PutRolePolicy'
+                  - 'iam:DetachRolePolicy'
+                Resource: '*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
+        - arn:aws:iam::aws:policy/AWSLambdaFullAccess
+        - arn:aws:iam::aws:policy/AmazonCognitoPowerUser
+        - arn:aws:iam::aws:policy/AWSXrayFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess        
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile 
+    DependsOn: [ InstanceRole ]
+    Properties:
+      Roles: [ !Ref InstanceRole ]
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref 'InstanceType'      
+      KeyName: !Ref 'KeyName'
+      ImageId: !Ref 'LatestAmiId'      
+      IamInstanceProfile: !Ref InstanceProfile
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: 'true'
+          DeviceIndex: '0'
+          GroupSet:
+            - !Ref 'InstanceSecurityGroup'
+          SubnetId: !Ref 'PublicSubnet1'
+      BlockDeviceMappings:
+        -  DeviceName: '/dev/xvda'
+           Ebs:
+             VolumeType: 'gp2'
+             VolumeSize: 20
+      Tags:
+        -  Key: 'Name'
+           Value: 'dotnet-devbox'
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          # START
+          amazon-linux-extras install -y python3
+          pip3 install --upgrade pip
+          pip3 install aws-sam-cli
+          cat > /tmp/subscript.sh << EOF
+          wget -O /tmp/dotnet-sdk-2.1.802-linux-x64.tar.gz https://download.visualstudio.microsoft.com/download/pr/8029a774-0cc8-4c62-945e-169a473b51d3/2c3f6a18aed152e5e498035695ed816f/dotnet-sdk-2.1.802-linux-x64.tar.gz
+          mkdir -p /home/ec2-user/.dotnet && tar zxf /tmp/dotnet-sdk-2.1.802-linux-x64.tar.gz -C /home/ec2-user/.dotnet
+          export DOTNET_ROOT=/home/ec2-user/.dotnet
+          export PATH=$PATH:/home/ec2-user/.dotnet:/home/ec2-user/.dotnet/tools
+          echo 'export PATH=$PATH:/home/ec2-user/.dotnet:/home/ec2-user/.dotnet/tools' >> /home/ec2-user/.bash_profile
+          echo 'export DOTNET_ROOT=/home/ec2-user/.dotnet' >> /home/ec2-user/.bash_profile
+
+          EOF
+          
+          chown ec2-user:ec2-user /tmp/subscript.sh && chmod a+x /tmp/subscript.sh
+          sleep 1; su - ec2-user -c "/tmp/subscript.sh"
+
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} \
+                --resource EC2Instance --region ${AWS::Region}
+
+    CreationPolicy:
+      ResourceSignal:
+        Count: 1
+        Timeout: "PT15M"
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      VpcId: !Ref 'VPC'
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref 'SSHLocation'
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value: !Ref 'EC2Instance'
+  PublicIP:
+    Description: Public IP address of the newly created EC2 instance
+    Value: !GetAtt [EC2Instance, PublicIp]
+  S3BucketName:
+    Description: S3 Bucket used for deployment
+    Value: !Ref S3Deploy

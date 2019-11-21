@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sample SAM Template for DotNet Lambda Functions
+Parameters:
+  ASPNETCOREENVIRONMENT:
+    Type: String
+    Default: Development
+  UserPoolId:
+    Type: String
+
+Resources:
+##
+##
+##
+  ServiceApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: v1
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: 
+              Fn::Sub: arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${UserPoolId}
+##
+## Lambda Function
+##
+  Worker:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: CustomerList::CustomerList.Functions::Handler
+      Runtime: dotnetcore2.1
+      Timeout: 30
+      MemorySize: 512
+      Tracing: Active
+      AutoPublishAlias: live
+      CodeUri: ./bin/Release/netcoreapp2.1/publish
+      Events:
+         Get:
+           Type: Api
+           Properties:
+             Path: /
+             RestApiId: !Ref ServiceApi
+             Method: GET
+             Auth:
+               Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          ASPNETCORE_ENVIRONMENT:
+            Fn::Sub: "${ASPNETCOREENVIRONMENT}"      
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Action: cognito-idp:*
+          Effect: Allow
+          Resource:
+            - Fn::Sub: arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${UserPoolId}

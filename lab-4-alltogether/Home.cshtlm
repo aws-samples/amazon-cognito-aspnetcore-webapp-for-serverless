@@ -1,0 +1,51 @@
+@page
+@model HomeModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Customers List";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <small style='color: gray'>Table update at: @DateTime.UtcNow UTC</small>
+    <table id="customersTable" class="table table-striped table-condensed" cellspacing="0"></table>
+</div>
+<hr />
+@ViewData["Message"]
+
+@section Scripts
+{
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    function setHeader(xhr) {
+        xhr.setRequestHeader('Authorization', '@ViewData["Token"]');
+    }
+        
+    /* Init the table */
+    var oTable = $('#customersTable').DataTable({
+        "pageResize": true,
+        "pagingType": "numbers",
+        "lengthMenu": [[10, 20], [10, 20]],
+        "ajax": {
+            "url": 'https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/v1',
+            "type": "GET",
+            "beforeSend": setHeader,                
+            "error": function () {
+            },
+        },
+        "columns": [
+        { "data": "name", "orderable": true, "title": "Name" },
+        { "data": "surname", "orderable": true, "title": "SurName" },
+        { "data": "age", "orderable": false, "title": "Age" },
+        { "data": "phone", "orderable": false, "title": "Phone" },
+        { "data": "email", "orderable": false, "title": "Email" }
+        ],
+        "order": [[2, "desc"]]
+    });
+</script>
+}
