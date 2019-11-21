@@ -1,3 +1,6 @@
+// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +33,6 @@ namespace WebApp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<OpenIdConnectOptions>(Configuration.GetSection("AWS:OpenId"));
@@ -94,7 +96,6 @@ namespace WebApp
             services.AddAWSService<IAmazonLambda>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
@@ -116,8 +117,6 @@ namespace WebApp
                     {
                         return (logLevel >= LogLevel.Information);
                     }
-
-                    // Log everything else
                     return true;
                 }
             };

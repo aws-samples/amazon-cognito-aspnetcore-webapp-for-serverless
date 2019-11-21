@@ -1,3 +1,6 @@
+// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+
 using System;
 using System.Linq;
 using System.Collections;
@@ -60,12 +63,7 @@ namespace CustomerList
         /// <param name="request"></param>
         /// <returns>The list of blogs</returns>
         public APIGatewayProxyResponse Handler(APIGatewayProxyRequest apigProxyEvent, ILambdaContext apigProxyContext)
-        {
-            //Console.WriteLine($"Processing request data for request {apigProxyEvent.RequestContext.RequestId}.");
-            //Console.WriteLine($"Body size = {apigProxyEvent.Body.Length}.");
-            //var headerNames = string.Join(", ", apigProxyEvent.Headers.Keys);
-            //Console.WriteLine($"Specified headers = {headerNames}.");
-            
+        {            
             try
             {
                 var client = new RestClient("https://uinames.com/api/?region=canada&amount=25&ext");
