@@ -59,7 +59,7 @@ We will create an AWS Serverless Application Model [SAM](https://github.com/awsl
 
 4. Execute the following command to deploy the new function to AWS. **Use the same backet bucket from lab1**. Don't forget to replace the **Amazon Cognito User Pool Id** on the command, and also to add your **<first initial>**+**<last initial>**+*-CustomerList* at the stack-name parameter:
  
- :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that help you identify the names of the resources created in the labs; like the Amazon S3 bucked required for deployment and the Amazon Cognito User Pool Id.
+ :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that helps you identify the resources' names created during the labs executions; like the Amazon S3 bucked required for deployment and the Amazon Cognito User Pool Id.
  ```
  dotnet lambda deploy-serverless --template cfn-sam-deployment.yaml --s3-bucket <your bucket name> --s3-prefix "customerlist/" --stack-name <first initial> + <last initial> + -CustomerList --template-parameters UserPoolId=<userPoolId>
  ```

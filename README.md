@@ -1,6 +1,6 @@
 ## Build and monitor a secure Serverless app powered by AspNetCore WebApp with Amazon Cognito and AWS X-Ray
 
-In this workshop, you'll deploy a serverless web application based on AspNetCore that leverages the Amazon Cognito Hosted UI for sign-up and sign-in. During the sign-in process, the AspNetCore application receives an identity token from Amazon Cognito, which processed by the standard DotNetCore OpenIdConnect library. The AspNetCore will interface with a serverless DotNet backend via a RESTful web service call. The RESTful backend API is exposed via Amazon API Gateway. Its authentication expects the same identity token of the signed-in user from the user pool, hence providing authentication enforcement and seamless integration with Amazon Cognito.
+In this workshop, you'll deploy a serverless web application based on AspNetCore that leverages the Amazon Cognito Hosted UI for sign-up and sign-in. During the sign-in process, the AspNetCore application receives an identity token from Amazon Cognito, which is processed by the standard DotNetCore OpenIdConnect library. The AspNetCore WebApp will interface with a serverless DotNet backend via a RESTful web service call. The erverless DotNet backend is exposed via Amazon API Gateway. Its authentication expects the same identity token of the signed-in user who logged into the AspNetCore WebApp, hence providing authentication enforcement and seamless integration with Amazon Cognito.
 
 See the diagram below for a depiction of the complete architecture.
 

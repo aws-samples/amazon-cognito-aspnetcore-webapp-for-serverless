@@ -1,12 +1,12 @@
 # Lab 4: Putting it all together
 
-In this Lab, you will stitch together the ASPNetCore WebApp with the CustomerList microservices. Both lambdas integrate with Amazon Cognito, using distinct methods.
+Let's now stitch together the ASPNetCore WebApp with the CustomerList microservices. Both lambdas integrate with Amazon Cognito, using distinct methods.
 
-The AspNetCore WebApp integrates with Amazon Cognito via OpenId library. On the other hand, the CustomerList microservice relies on the Amazon API Gateway to enforce authentication. The CustomerList Api Gateway requires a valid identity token issued by the same Amazon Cognito that authenticated the user at the Hosted UI sign-in page.
+The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the other hand, the CustomerList microservice relies on the Amazon API Gateway Authorizer, which requires a valid identity token issued by the same Amazon Cognito that authenticated the user at the Hosted UI sign-in page.
 
 ## Step 1: Creating a new AspNetCore Razor page to reference the CustomerList microservices
 
-1. At this point, you probably have two *Visual Studio Codes* opened; one with the WebApp project, and a second one with the CustomerList project. At any Visual Studio Code, go to *Window* and select the one that contains **WebApp** in its name.
+1. At this point, you probably have two *Visual Studio Codes* opened; one with the WebApp project, and a second one with the CustomerList project. At the Visual Studio Code, go to *Window* and select the one that contains **WebApp** on its name.
  
 2. From the Visual Studio, create two new files **Home.cshtml** and **Home.cshtml.cs** by right-clicking on the **Pages** directory and selecting **New file**.
 
@@ -53,7 +53,7 @@ The AspNetCore WebApp integrates with Amazon Cognito via OpenId library. On the 
  ```
 9. Execute the following command:
  
- :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that help you identify the names of the resources created in the labs; like the Amazon S3 bucked required for deployment.
+ :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that helps you identify the resources' names created during the labs executions;like the Amazon S3 bucked required for deployment.
 
  ```
  dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name <first initial> + <last initial> + -AspNetCoreWebApp

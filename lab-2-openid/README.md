@@ -1,9 +1,8 @@
 # Lab 2: Adding OpenId to AspNetCore
-
-The steps in this lab will change the existent AWS lambda AspNetCore to authenticate users from Amazon Cognito by using OpenID.
+In this Lab, the AWS Lambda AspNetCoreWebApp is going to be integrated with Amazon Cognito by using OpenID.
 
 ### Step 1: Creating a User Pool
-This step will create an Amazon Cognito user pool. It will allow your users can sign in to your web or mobile app through Amazon Cognito.
+This step will create an Amazon Cognito user pool. A user pool is a user directory in Amazon Cognito. With a user pool, your users can sign in to your web or mobile app through Amazon Cognito.
 
 1. Using the Visual Code terminal, executing the following cli command to create an Amazon Cognito user pool. Make sure to change the **pool-name**. 
 ```
@@ -60,21 +59,21 @@ aws cognito-idp create-user-pool-client --user-pool-id <poolId> --client-name We
 }
 ```
 
-1. After setting up an app client, you can configure the address of your sign-up and sign-in webpages. You can use an Amazon Cognito hosted domain and choose an available domain prefix. For this workshop, we will choose an available domain prefix. Let's first try to use *<first initial> + <last initial> + -dotnetcore-cognito*. For John Smith: js-dotnetcore-cognito. If you receive an error saying **Domain already exists** try a different domain name. No output means it worked.
+1. After setting up an app client, you can configure the address of your sign-up and sign-in webpages. You can use an Amazon Cognito hosted domain and choose an available domain prefix. For this workshop, use *first initial>* + *last initial* + *-dotnetcore-cognito*. For John Smith: js-dotnetcore-cognito. If you receive an error saying **Domain already exists** try a different domain name.
 ```
 aws cognito-idp create-user-pool-domain --user-pool-id <poolId> --domain <first initial> + <last initial> + -dotnetcore-cognito
 ```
 
 ### Step 2: Setting up Amazon Api Gateway Authorizer
 
-1. Open the file **Startup.cs** on VisualCode, by clicking on the filename at the left-panel.
+1. Open the file **Startup.cs** on Visual Studio Code, by clicking on the filename at the left-panel.
 2. Replace its entire content with [Startup.cs](Startup.cs). If you have cloned this repo, the file is located under lab-2-openid.
 
 :notebook: **Note** The Startup.cs script initializes the [OpenIdConnectOptions](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.openidconnectoptions) by using the Amazon Cognito information defined at **appsettings.json**. It also instructs the [DataProtection](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/introduction) to utilize AWS [SSM Provider](https://github.com/aws/aws-ssm-data-protection-provider-for-aspnet) for the encryptions keys management and rotation. The [AddRazorPagesOptions](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/razor-pages-authorization) defines what pages require Authentication. And, lastly, we configure the [LambdaLoggerOptions](https://github.com/aws/aws-lambda-dotnet/blob/master/Libraries/src/Amazon.Lambda.Logging.AspNetCore/LambdaLoggerOptions.cs) for better integration/experience with AWS CloudlogWatch.
 
 3. Replace the **appsetting.json** with the following:
 
-:warning: Don't forget replace the **Client Id**, **Client Secret**, **domain**, **restApiId** and **awsRegion** with the correct values.
+:warning: Don't forget replace the **Client Id**, **Client Secret**, **domain**, **restApiId** and **awsRegion** with the proper values.
 
  ```
  {
@@ -109,15 +108,15 @@ aws cognito-idp create-user-pool-domain --user-pool-id <poolId> --domain <first 
  dotnet publish -c Release
  ```
 
-5. Re-publish the project again by executing the following command:
+5. Re-publish the project by executing the following command:
 
-:notebook: **Note**: To obtain the Amazon S3 bucket name, query the resources created for the *first initial* + *last initial* + *-dotnetcore-devbox*, by executing ```aws cloudformation describe-stack-resources --stack-name <first initial> + <last initial> + -dotnetcore-devbox --query 'StackResources[*].{Type:ResourceType,Id:PhysicalResourceId}' --output text```. Look for the *AWS::S3::Bucket resource*.
+:notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that helps you identify the resources' names created in the labs; like the Amazon S3 bucked required for deployment.
 
  ```
  dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name <first initial> + <last initial> + -AspNetCoreWebApp
  ```
  
-6. Wait until the result ```Stack finished updating with status: UPDATE_COMPLETE```. Copy the ApiURL to a browser. This time the application will ask for a Jwt Token; hence will redirect you to the Amazon Cognito hosted UI for authentication.
+1. Wait until the result ```Stack finished updating with status: UPDATE_COMPLETE```. Copy the ApiURL to a browser. This time the application will ask for a Jwt Token; hence will redirect you to the Amazon Cognito hosted UI for authentication.
 
 <img src="../images/cognitohostedui.png" width="1500"/>
 
