@@ -7,7 +7,7 @@ In this step, we will deploy an Amazon EC2 Linux Machine that has installed:
 - The AWSCLI 
 - The AWS [SAM CLI](https://github.com/awslabs/aws-sam-cli)
 - The Long Term Support (LTS) [.NET Core](https://dotnet.microsoft.com/platform/support/policy/dotnet-core) v2.1.8. This version is the currently supported LTS version by [AWS Lambda for .NET Core](https://github.com/aws/aws-lambda-dotnet).
- - :notebook: **Note:** It is possible to execute non-LTS .NET Core on AWS, as per this [blog](https://aws.amazon.com/blogs/developer/announcing-amazon-lambda-runtimesupport/). For simplicity, this workshop is based on the LTS .NET Core version.
+  :notebook: **Note:** It is possible to execute non-LTS .NET Core on AWS, as per this [blog](https://aws.amazon.com/blogs/developer/announcing-amazon-lambda-runtimesupport/). For simplicity, this workshop is based on the LTS .NET Core version.
 
 ---
 
@@ -33,7 +33,7 @@ In this step, you will install the Visual Studio Code, along with useful extensi
  
 <img src="../images/vscodeextensions1.png" width="400"/>
 
-1. In the Search Extensions field type the packages names below and Click on *install*. For more information about how to manage Visual Studio Code Extensions, click [here](https://code.visualstudio.com/docs/editor/extension-gallery)
+3. In the Search Extensions field type the packages names below and Click on *install*. For more information about how to manage Visual Studio Code Extensions, click [here](https://code.visualstudio.com/docs/editor/extension-gallery)
  ```
  ms-vscode-remote.remote-ssh
  ms-vscode.csharp
@@ -49,7 +49,7 @@ In this step, you will install the Visual Studio Code, along with useful extensi
  
 <img src="../images/devboxoutputs.png" width="700"/>
 
-1. Login to the development box. Specify the appropriate private key and ``PublicIP`` from the EC2 instance. See below ways to connect.
+4. Login to the development box. Specify the appropriate private key and ``PublicIP`` from the EC2 instance. See below ways to connect.
 
 #### Visual Studio Code (Mac or Windows) - The recommended way for this workshop
 
@@ -59,11 +59,11 @@ In this step, you will install the Visual Studio Code, along with useful extensi
 
 <img src="../images/vs1.png" width="400"/>
 
-1. Click on the **gear icon** next to the SSH Targets to create a configuration file. It will generate a new file with default values.
+3. Click on the **gear icon** next to the SSH Targets to create a configuration file. It will generate a new file with default values.
 
 <img src="../images/vs2.png" width="800"/>
 
-1. Provide the host entry with values from the template below. Replace the **Host**, **HostName**, and **IdentityFile** as shown below. After saving the config, an SSH Target will appear. If not, close and reopen Visual Studio Code.
+4. Provide the host entry with values from the template below. Replace the **Host**, **HostName**, and **IdentityFile** as shown below. After saving the config, an SSH Target will appear. If not, close and reopen Visual Studio Code.
 
 #### Mac
 ```
@@ -110,11 +110,11 @@ ssh -i path/to/EC2PrivateKey ec2-user@PublicIp -L localhost:3000:localhost:3000
 
 <img src="../images/putty_connect.png" width="500"/>
 
-1. Specify the converted .ppk file in the SSH/Auth ``Private key file for authentication`` field.
+3. Specify the converted .ppk file in the SSH/Auth ``Private key file for authentication`` field.
 
 <img src="../images/putty_key.png" width="500"/>
 
-1. Configure tunneling for localhost:3000 in the SSH/Tunnels. Specify the ``Source port`` and ``Destination`` and click **Add**.
+4. Configure tunneling for localhost:3000 in the SSH/Tunnels. Specify the ``Source port`` and ``Destination`` and click **Add**.
 
 <img src="../images/putty_tunnel.png" width="500"/>
 

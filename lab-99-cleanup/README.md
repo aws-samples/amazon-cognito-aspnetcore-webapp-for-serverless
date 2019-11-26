@@ -30,5 +30,4 @@ aws s3 rm s3://<s3 bucket>/ --recursive
 4. Select the *first initial* + *last initial* + *-dotnetcore-devbox*. Select **Delete** and confirm by clicking on **Delete stack**
 5. Confirm that all stacks were successfuly deleted.
 
-
 **Thank you**

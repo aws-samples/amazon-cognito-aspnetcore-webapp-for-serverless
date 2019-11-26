@@ -54,7 +54,7 @@ Using the dotnet cli we will deploy our AspNet Core WebApp to AWS.
  ```
  dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name <first initial> + <last initial> + -AspNetCoreWebApp
  ```
-1. When the deployment finishes, you will be able to see all the resources that were created and the URL of your AspNetCore webapplication. Something like:
+3. When the deployment finishes, you will be able to see all the resources that were created and the URL of your AspNetCore webapplication. Something like:
  ```
  Stack finished updating with status: CREATE_COMPLETE
 
@@ -62,10 +62,10 @@ Using the dotnet cli we will deploy our AspNet Core WebApp to AWS.
  ------------------------------ --------------------------------------------------
  ApiURL https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/Prod/
  ```
-2. Copy and past the URL into a browser to make sure that your AspNet Core is working.
+4. Copy and past the URL into a browser to make sure that your AspNet Core is working.
  <img src="../images/aspneturlresult.png" width="1000"/>
 
-3. Let's check the cloudformation stack resources that were created for the AspNetCoreWebApp. The dotnet lambda blueprint took care of creating an Amazon API Gateway, IAM Roles and its policies and the Lambda itself. The following command shows the resource types and their Ids. 
+5. Let's check the cloudformation stack resources that were created for the AspNetCoreWebApp. The dotnet lambda blueprint took care of creating an Amazon API Gateway, IAM Roles and its policies and the Lambda itself. The following command shows the resource types and their Ids. 
 ```
 aws cloudformation describe-stack-resources --stack-name <first initial> + <last initial> + -AspNetCoreWebApp --query 'StackResources[*].{Type:ResourceType,Id:PhysicalResourceId}' --output text
 ```
@@ -92,11 +92,11 @@ Now it is time to prepare our application to integrate with the AWS resources we
  dotnet add package Amazon.AspNetCore.DataProtection.SSM --version 1.1.0
 
  ```
-1. You can verify if all the packages were installed by looking at the WebApp.csproj
+2. You can verify if all the packages were installed by looking at the WebApp.csproj
  ```
  cat WebApp.csproj
  ```
-2. At the terminal windows, let's confirm that our code compiles with no errors
+3. At the terminal windows, let's confirm that our code compiles with no errors
  ```
  dotnet publish -c Release
  ```
