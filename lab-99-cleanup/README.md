@@ -15,7 +15,7 @@ aws s3 rm s3://<s3 bucket>/ --recursive
 1. Obtain the Amazon Cognito User pool Id for the *first initial* + *last initial* + *-CognitoUserPool*.
 2. Delete the user pool domain:
  ```
- aws cognito-idp delete-user-pool-domain --domain <first initial> + <last initial> + -dotnetcore-cognito --user-pool-id <poolId>
+ aws cognito-idp delete-user-pool-domain --domain <first initial> + <last initial> + -dotnetcore --user-pool-id <poolId>
  ```
 3. Delete the user pool by executing the command:
  ```

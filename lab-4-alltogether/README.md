@@ -86,11 +86,11 @@ In this step, we will access the DotNet CustomerList API directly to show how th
 
 1. Obtain the restApiId for the CustomerList microservices by executing ```aws apigateway get-rest-apis --query 'items[*].{name:name,restApiId:id}'``` and copy the **restApiId** that contains **-CustomerList** in the name.
 
-2. From the AspNetCoreWebApp page (https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/Prod/) copy the token from the initial page.
+2. From the AspNetCoreWebApp page (https://*restApiId*.execute-api.*awsRegion*.amazonaws.com/Prod/) copy the token from the initial page.
 
 <img src="../images/token.png" width="1000"/>
 
-3. Open the API tool of your choice and paste the https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/v1 with the method **GET** and send the request. As the call hasn't provided any identity token, the result is an **Unauthorized** message.
+3. Open the API tool of your choice and paste the https://*restApiId*.execute-api.*awsRegion*.amazonaws.com/v1 with the method **GET** and send the request. As the call hasn't provided any identity token, the result is an **Unauthorized** message.
 
 <img src="../images/postmannoauth.png" width="1200"/>
 

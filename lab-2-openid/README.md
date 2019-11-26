@@ -59,9 +59,9 @@ aws cognito-idp create-user-pool-client --user-pool-id <poolId> --client-name We
 }
 ```
 
-1. After setting up an app client, you can configure the address of your sign-up and sign-in webpages. You can use an Amazon Cognito hosted domain and choose an available domain prefix. For this workshop, use *first initial>* + *last initial* + *-dotnetcore-cognito*. For John Smith: js-dotnetcore-cognito. If you receive an error saying **Domain already exists** try a different domain name.
+4. After setting up an app client, you can configure the address of your sign-up and sign-in webpages. You can use an Amazon Cognito hosted domain and choose an available domain prefix. For this workshop, use *first initial* + *last initial* + *-dotnetcore-cognito*. For John Smith: js-dotnetcore-cognito. If you receive an error saying **Domain already exists** try a different domain name.
 ```
-aws cognito-idp create-user-pool-domain --user-pool-id <poolId> --domain <first initial> + <last initial> + -dotnetcore-cognito
+aws cognito-idp create-user-pool-domain --user-pool-id <poolId> --domain <first initial> + <last initial> + -dotnetcore
 ```
 
 ### Step 2: Setting up Amazon Api Gateway Authorizer
@@ -116,7 +116,7 @@ aws cognito-idp create-user-pool-domain --user-pool-id <poolId> --domain <first 
  dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name <first initial> + <last initial> + -AspNetCoreWebApp
  ```
  
-1. Wait until the result ```Stack finished updating with status: UPDATE_COMPLETE```. Copy the ApiURL to a browser. This time the application will ask for a Jwt Token; hence will redirect you to the Amazon Cognito hosted UI for authentication.
+6. Wait until the result ```Stack finished updating with status: UPDATE_COMPLETE```. Copy the ApiURL to a browser. This time the application will ask for a Jwt Token; hence will redirect you to the Amazon Cognito hosted UI for authentication.
 
 <img src="../images/cognitohostedui.png" width="1500"/>
 

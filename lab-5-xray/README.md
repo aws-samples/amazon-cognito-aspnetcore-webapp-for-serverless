@@ -11,7 +11,7 @@
 aws apigateway update-stage --rest-api-id <restApiId> --stage-name 'Prod' --patch-operations op=replace,path=/*/*/logging/dataTrace,value=true
 ```
 
-4. similarly, run the following command with the *CustomerList* **restApiId** pointing to the *v1* Stage to enable logging and tracing.
+3. similarly, run the following command with the *CustomerList* **restApiId** pointing to the *v1* Stage to enable logging and tracing.
 ```
 aws apigateway update-stage --rest-api-id <restApiId> --stage-name 'v1' --patch-operations op=replace,path=/*/*/logging/dataTrace,value=true
 ```
@@ -44,7 +44,7 @@ aws apigateway update-stage --rest-api-id <restApiId> --stage-name 'v1' --patch-
  using Amazon.XRay.Recorder.Core;
 ```
 
-1. At the **Index.cshtml.cs** and **Home.cshtml.cs** insert the following line into the **public async Task OnGetAsync(int id)** method, right after *string expDateStr = expDate.ToString();*.
+5. At the **Index.cshtml.cs** and **Home.cshtml.cs** insert the following line into the **public async Task OnGetAsync(int id)** method, right after *string expDateStr = expDate.ToString();*.
  ```
  AWSXRayRecorder.Instance.AddAnnotation("username", username);
  ```
