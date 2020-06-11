@@ -9,9 +9,7 @@ Parameters:
     Type: String
 
 Resources:
-##
-##
-##
+
   ServiceApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -25,19 +23,17 @@ Resources:
           CognitoAuthorizer:
             UserPoolArn: 
               Fn::Sub: arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${UserPoolId}
-##
-## Lambda Function
-##
+
   Worker:
     Type: AWS::Serverless::Function
     Properties:
       Handler: CustomerList::CustomerList.Functions::Handler
-      Runtime: dotnetcore2.1
-      Timeout: 30
-      MemorySize: 512
+      Runtime: dotnetcore3.1
+      Timeout: 10
+      MemorySize: 256
       Tracing: Active
       AutoPublishAlias: live
-      CodeUri: ./bin/Release/netcoreapp2.1/publish
+      CodeUri: ./bin/Release/netcoreapp3.1/publish
       Events:
          Get:
            Type: Api

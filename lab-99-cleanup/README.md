@@ -25,9 +25,9 @@ aws s3 rm s3://<s3 bucket>/ --recursive
 ## Step 3: Removing Cloudformation Stacks
 
 1. Open the [CloudFormation](https://console.aws.amazon.com/cloudformation/) console.
-2. Select the *first initial* + *last initial* + *-CustomerList*. Select **Delete** and confirm by clicking on **Delete stack**
-3. Select the *first initial* + *last initial* + *-AspNetCoreWebApp*. Select **Delete** and confirm by clicking on **Delete stack**
-4. Select the *first initial* + *last initial* + *-dotnetcore-devbox*. Select **Delete** and confirm by clicking on **Delete stack**
+2. Select the *CustomerList* Select **Delete** and confirm by clicking on **Delete stack**
+3. Select the *AspNetCoreWebApp* Select **Delete** and confirm by clicking on **Delete stack**
+4. Select the *DotNetLab* Select **Delete** and confirm by clicking on **Delete stack**
 5. Confirm that all stacks were successfuly deleted.
 
 **Thank you**

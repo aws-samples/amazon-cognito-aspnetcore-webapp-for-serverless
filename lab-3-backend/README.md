@@ -31,19 +31,18 @@ We will create an AWS Serverless Application Model [SAM](https://github.com/awsl
 
 :notebook: **Note:** *You can copy and paste all the lines below into the terminal prompt. The last line pasted still need a ENTER to be installed*.
 
- ```
- dotnet add package Newtonsoft.Json --version 12.0.2
- dotnet add package AWSSDK.Core --version 3.3.103.48
- dotnet add package AWSSDK.Lambda --version 3.3.103.16
- dotnet add package Amazon.Lambda.Core --version 1.1.0
- dotnet add package AWSSDK.Extensions.NETCore.Setup --version 3.3.100.1
- dotnet add package AWSSDK.S3 --version 3.3.104.36
- dotnet add package AWSSDK.CognitoIdentityProvider --version 3.3.103.3
- dotnet add package AWS.Logger.Core --version 1.4.0
- dotnet add package Amazon.Lambda.APIGatewayEvents --version 1.2.0
- dotnet add package RestSharp --version 106.6.10
+```bash
+dotnet add package Newtonsoft.Json --version 12.0.3
+dotnet add package AWSSDK.Core --version 3.3.107.9
+dotnet add package AWSSDK.Lambda --version 3.3.109.39
+dotnet add package Amazon.Lambda.Core --version 1.1.0
+dotnet add package AWSSDK.Extensions.NETCore.Setup --version 3.3.101
+dotnet add package AWS.Logger.Core --version 1.6.0
+dotnet add package AWSSDK.S3 --version 3.3.111.10
+dotnet add package Amazon.Lambda.APIGatewayEvents --version 2.1.0
+dotnet add package AWSSDK.CognitoIdentityProvider --version 3.3.109.49
+```
 
- ```
 1. Replace the entire **Function.cs** code with the following [Function.cs](Function.cs). This file is available in this repo at the lab-3-backend.
  
  :notebook: **Note:** This is a simple code that only makes a RestApi call to a [on-line tool](https://uinames.com/) to generate fake names. It defines the POCO classes to map API call results. The lambda function replies back to Amazon ApiGateway using a json structure based on the [APIGatewayProxyResponse](https://github.com/aws/aws-lambda-dotnet/blob/master/Libraries/src/Amazon.Lambda.APIGatewayEvents/APIGatewayProxyResponse.cs), which is the required format for Lambda Proxy Integration. More information at [Set up Lambda Proxy Integration in API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html)
@@ -53,30 +52,30 @@ We will create an AWS Serverless Application Model [SAM](https://github.com/awsl
  :notebook: **Note:** the cfn-sam-deployment.yaml is a [SAM](https://github.com/awslabs/serverless-application-model) cloudformation file, that creates the Amazon API Gateway and its integration with an existent Amazon Cognito. It also creates and deploys the lambda function with all permissions and integrations required for the function to work.
 
 3. Compile the new code to create the binaries that will be deployed.
- ```
+ ```bash
  dotnet publish -c Release
  ```
 
-4. Execute the following command to deploy the new function to AWS. **Use the same backet bucket from lab1**. Don't forget to replace the **Amazon Cognito User Pool Id** on the command, and also to add your **<first initial>**+**<last initial>**+*-CustomerList* at the stack-name parameter:
+4. Execute the following command to deploy the new function to AWS. **Use the same backet bucket from lab1**. Don't forget to replace the **Amazon Cognito User Pool Id** on the command:
  
  :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that helps you identify the resources' names created during the labs executions; like the Amazon S3 bucked required for deployment and the Amazon Cognito User Pool Id.
- ```
- dotnet lambda deploy-serverless --template cfn-sam-deployment.yaml --s3-bucket <your bucket name> --s3-prefix "customerlist/" --stack-name <first initial> + <last initial> + -CustomerList --template-parameters UserPoolId=<userPoolId>
+ ```bash
+ dotnet lambda deploy-serverless --template cfn-sam-deployment.yaml --s3-bucket <your bucket name> --s3-prefix "customerlist/" --stack-name CustomerList --template-parameters UserPoolId=<userPoolId>
  ```
 5. When the deployment finishes tiy will the following message:
- ```
+ ```bash
  Stack finished updating with status: CREATE_COMPLETE
  ```
 6. List all the lambda functions names that you have deploy by running:
- ```
+ ```bash
  aws lambda list-functions --query 'Functions[].FunctionName'
  ```
-7. Copy the lambda function name that starts with *first initial* + *last initial* + *-CustomerList* and execute the follow aws cli command replacing the **<CustomerListName>** the Lambda CustomerList name. This command will invoke the CustomerList AWS Lambda function, saving the results into **response.json** file:
- ```
- aws lambda invoke --function-name <CustomerListName> response.json
+7. Copy the lambda function name that starts with **CustomerList-Worker** and execute the follow aws cli command with the Lambda name. This command will invoke the CustomerList AWS Lambda function, saving the results into **response.json** file:
+ ```bash
+ aws lambda invoke --function-name <LambdaCustomerListName> response.json
  ```
 8. You should receive the following output:
- ```
+ ```json
  {
  "StatusCode": 200,
  "ExecutedVersion": "$LATEST"
@@ -85,14 +84,15 @@ We will create an AWS Serverless Application Model [SAM](https://github.com/awsl
 9. Check the response sent by the lambda function by executing ```more response.json```. You will encouter a json strucutre that contains : *{"statusCode":200,"headers":{"Content-Type":"application/json","Access-Control-Allow-Origin":"\*","Access-Control-Allow-Credentials":"true"},"multiValueHeaders":null,"body": **randon information**,"isBase64Encoded": false}*
 
 10. Let's check the cloudformation stack resources that were created for the solution. The dotnet lambda blueprint took care of creating an Amazon API Gateway, IAM Roles and its policies and the Lambda itself. The following command shows the resource types and their Ids. 
-```
-aws cloudformation describe-stack-resources --stack-name <first initial> + <last initial> + -CustomerList --query 'StackResources[*].{Type:ResourceType,Id:PhysicalResourceId}'
+    
+```bash
+aws cloudformation describe-stack-resources --stack-name CustomerList --query 'StackResources[*].{Type:ResourceType,Id:PhysicalResourceId}'
 ```
 
 ### Step 2: Adding OAuth Scopes to the Amazon API Gateway that exposes the CustomerList microservices
 
 1. Open the [Amazon API Gateway](https://console.aws.amazon.com/apigateway/) console.
-2. Select the *<first initial>*+*<last initial>*+*-CustomerList* Api.
+2. Select the **CustomerList** Api.
 3. Select the method **GET**.
 4. Select **Method Request**.
 5. Add **email**, **openid** and **profile** to the *OAuth Scopes* and click on update (The check mark icon at the end of the field).

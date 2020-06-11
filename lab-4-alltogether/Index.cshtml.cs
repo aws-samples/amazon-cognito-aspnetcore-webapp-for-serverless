@@ -24,19 +24,18 @@ namespace WebApp.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ILogger _logger;
 
-        private ILogger logger = null;
-
-        public IndexModel(ILogger<DebugLogger> logger)
+        public IndexModel(ILogger<IndexModel> logger)
         {
-            this.logger = logger;
+            _logger = logger;
         }
 
         public async Task OnGetAsync(int id)
         {
             if (!User.Identity.IsAuthenticated)
             {
-                logger.LogWarning("User not Authenticated!!!");
+                _logger.LogWarning("User not Authenticated!!!");
             }
 
             string accessToken = await HttpContext.GetTokenAsync("access_token");
@@ -50,11 +49,11 @@ namespace WebApp.Pages
 
             if (expDate < DateTime.Now)
             { 
-                logger.LogWarning("Token Expired!!!");
+                _logger.LogWarning("Token Expired!!!");
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                logger.LogInformation("Logging out successfuly Cookie");
+                _logger.LogInformation("Logging out successfuly Cookie");
                 await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
-                logger.LogInformation("Logging out successfuly OpenId");
+                _logger.LogInformation("Logging out successfuly OpenId");
             }
                     
             ViewData["Token"] = accessToken;

@@ -16,9 +16,9 @@ The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the ot
  
 4. Execute ```aws apigateway get-rest-apis --query 'items[*].{name:name,restApiId:id}'``` and search for the result that contains **-CustomerList** in its the name.
 5. Open the **Home.cshtml**. Go to line 35 and replace the **restApiId** value (obtained on the previous step). The excerpt below shows what to look for. Don't forget to replace the **awsRegion** to the region you are running the workshop.
- ```
+ ```json
  "ajax": {
- "url": 'https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/v1',
+ "url": "https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/v1",
  "type": "GET",
  "beforeSend": setHeader,
  "error": function () {
@@ -29,7 +29,7 @@ The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the ot
 6. Download the [Index.cshtml.cs](Index.cshtml.cs) and replace the existent **Index.cshtml.cs** with the content of the downloaded file.
 
 7. Replace the existent **Index.cshtml** code with:
- ```
+ ```html
  @page
  @model IndexModel
  @{
@@ -55,11 +55,11 @@ The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the ot
  
  :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that helps you identify the resources' names created during the labs executions;like the Amazon S3 bucked required for deployment.
 
- ```
- dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name <first initial> + <last initial> + -AspNetCoreWebApp
+ ```bash
+ dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name AspNetCoreWebApp
  ```
 9. Wait until the deployment finished:
- ```
+ ```bash
  Stack finished updating with status: UPDATE_COMPLETE
 
  Output Name Value

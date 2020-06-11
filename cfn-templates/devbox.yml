@@ -168,8 +168,8 @@ Resources:
           pip3 install --upgrade pip
           pip3 install aws-sam-cli
           cat > /tmp/subscript.sh << EOF
-          wget -O /tmp/dotnet-sdk-2.1.802-linux-x64.tar.gz https://download.visualstudio.microsoft.com/download/pr/8029a774-0cc8-4c62-945e-169a473b51d3/2c3f6a18aed152e5e498035695ed816f/dotnet-sdk-2.1.802-linux-x64.tar.gz
-          mkdir -p /home/ec2-user/.dotnet && tar zxf /tmp/dotnet-sdk-2.1.802-linux-x64.tar.gz -C /home/ec2-user/.dotnet
+          wget -O /tmp/dotnet-sdk-3.1.301-linux-x64.tar.gz https://download.visualstudio.microsoft.com/download/pr/8db2b522-7fa2-4903-97ec-d6d04d297a01/f467006b9098c2de256e40d2e2f36fea/dotnet-sdk-3.1.301-linux-x64.tar.gz
+          mkdir -p /home/ec2-user/.dotnet && tar zxf /tmp/dotnet-sdk-3.1.301-linux-x64.tar.gz -C /home/ec2-user/.dotnet
           export DOTNET_ROOT=/home/ec2-user/.dotnet
           export PATH=$PATH:/home/ec2-user/.dotnet:/home/ec2-user/.dotnet/tools
           echo 'export PATH=$PATH:/home/ec2-user/.dotnet:/home/ec2-user/.dotnet/tools' >> /home/ec2-user/.bash_profile

@@ -35,21 +35,23 @@ namespace WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<OpenIdConnectOptions>(Configuration.GetSection("AWS:OpenId"));
-            
-            var serviceProvider = services.BuildServiceProvider();
-            var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
             services.AddDataProtection()
                 .PersistKeysToAWSSystemsManager("/AspNetCoreWebApp/DataProtection");
 
-            services.AddMvc()
+            services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
-                {
-                    options.Conventions.AuthorizePage("/Index");
-                    options.Conventions.AuthorizePage("/Home");
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    {
+                        options.Conventions.AuthorizePage("/Index");
+                        options.Conventions.AuthorizePage("/Home");
+                    });
 
             services.AddAuthentication(options =>
             {
@@ -60,14 +62,14 @@ namespace WebApp
             .AddCookie()
             .AddOpenIdConnect(options =>
             {
-                options.ResponseType = authOptions.Value.ResponseType;
-                options.MetadataAddress = authOptions.Value.MetadataAddress;
-                options.ClientId = authOptions.Value.ClientId;
-                options.ClientSecret = authOptions.Value.ClientSecret;
-                options.SaveTokens = authOptions.Value.SaveTokens;
+                options.ResponseType = Configuration["AWS:OpenId:ResponseType"];
+                options.MetadataAddress = Configuration["AWS:OpenId:MetadataAddress"];
+                options.ClientId = Configuration["AWS:OpenId:ClientId"];
+                options.ClientSecret = Configuration["AWS:OpenId:ClientSecret"];
+                options.SaveTokens = Convert.ToBoolean(Configuration["AWS:OpenId:SaveTokens"]);
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = authOptions.Value.TokenValidationParameters.ValidateIssuer
+                    ValidateIssuer = Convert.ToBoolean(Configuration["AWS:OpenId:TokenValidationParameters:ValidateIssuer"])
                 };
                 options.Events = new OpenIdConnectEvents()
                 {
@@ -88,17 +90,14 @@ namespace WebApp
                 };
             });
 
-            services.AddSingleton<IConfiguration>(Configuration);
-
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonCognitoIdentityProvider>();
             services.AddAWSService<IAmazonS3>();
             services.AddAWSService<IAmazonLambda>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-
             var loggerOptions = new LambdaLoggerOptions
             {
                 IncludeCategory = false,
@@ -125,23 +124,17 @@ namespace WebApp
             loggerFactory
                 .AddLambdaLogger(loggerOptions);
 
-            app.UseAuthentication();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
-
-            app.UseMvc();
+        
+            app.UseRouting();
+        
+            app.UseAuthentication();
+            app.UseAuthorization();
+        
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
         }
 
     }

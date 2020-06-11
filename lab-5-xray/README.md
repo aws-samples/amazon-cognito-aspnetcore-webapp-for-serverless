@@ -21,43 +21,43 @@ aws apigateway update-stage --rest-api-id <restApiId> --stage-name 'v1' --patch-
 1. On the **Visual Studio Code** Go to *Window* and select the **WebApp** windows.
 
 2. In the terminal panel, execute the command to add the AWS X-Ray library:
+ ```bash
+ dotnet add package AWSXRayRecorder.Handlers.AspNetCore --version 2.7.1
  ```
- dotnet add package AWSXRayRecorder.Handlers.AspNetCore --version 2.6.2
- ```
-3. Instrument the X-Ray in the **Configure()** method of the **Startup.cs** file by adding the **using Microsoft.AspNetCore.Builder;** and **app.UseXRay("AspNetCoreWebApp");**. The exerpt below show where they should go in the Startup.cs file.
+3. Instrument the X-Ray in the **Configure()** method of the **Startup.cs** file by adding **app.UseXRay("AspNetCoreWebApp");**. The exerpt below show where they should go in the Startup.cs file.
    
-```
+```c#
  using Microsoft.AspNetCore.Builder;
 
- public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+ public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
  {
  ...
 
- app.UseAuthentication();
+ app.UseAuthorization();
  app.UseXRay("AspNetCoreWebApp");
  ...
  }
 ```
 
 4. Add the folling lines to **Index.cshtml.cs** and **Home.cshtml.cs**.
-```
+```c#
  using Amazon.XRay.Recorder.Core;
 ```
 
 5. At the **Index.cshtml.cs** and **Home.cshtml.cs** insert the following line into the **public async Task OnGetAsync(int id)** method, right after *string expDateStr = expDate.ToString();*.
- ```
+ ```c#
  AWSXRayRecorder.Instance.AddAnnotation("username", username);
  ```
 6. Make sure you project still compiles correctly.
- ```
+ ```bash
  dotnet publish -c Release
  ```
 7. Re-publish the project again by executing the following command:
 
 :notebook: **Note**: The [Support Commands Page](/SupportCommands.md) provides a list of useful commands that helps you identify the resources' names created during the labs executions; like the Amazon S3 bucked required for deployment.
 
- ```
- dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name <first initial> + <last initial> + -AspNetCoreWebApp
+ ```bash
+ dotnet lambda deploy-serverless --template serverless.template --s3-bucket <bucket name> --s3-prefix "aspnetcorewebapp/" --stack-name AspNetCoreWebApp
  ```
 
 ## Step 3: Visualizing the X-Ray information
