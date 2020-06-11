@@ -72,7 +72,7 @@ dotnet add package AWSSDK.CognitoIdentityProvider --version 3.3.109.49
  ```
 7. Copy the lambda function name that starts with **CustomerList-Worker** and execute the follow aws cli command with the Lambda name. This command will invoke the CustomerList AWS Lambda function, saving the results into **response.json** file:
  ```bash
- aws lambda invoke --function-name <LambdaCustomerListName> response.json
+ aws lambda invoke --function-name <CustomerList-Worker-000000000> response.json
  ```
 8. You should receive the following output:
  ```json

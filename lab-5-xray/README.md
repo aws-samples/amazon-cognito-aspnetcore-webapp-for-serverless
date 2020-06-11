@@ -27,8 +27,6 @@ aws apigateway update-stage --rest-api-id <restApiId> --stage-name 'v1' --patch-
 3. Instrument the X-Ray in the **Configure()** method of the **Startup.cs** file by adding **app.UseXRay("AspNetCoreWebApp");**. The exerpt below show where they should go in the Startup.cs file.
    
 ```c#
- using Microsoft.AspNetCore.Builder;
-
  public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
  {
  ...
@@ -39,12 +37,12 @@ aws apigateway update-stage --rest-api-id <restApiId> --stage-name 'v1' --patch-
  }
 ```
 
-4. Add the folling lines to **Index.cshtml.cs** and **Home.cshtml.cs**.
+1. Add the folling lines to **Index.cshtml.cs** and **Customers.cshtml.cs**.
 ```c#
  using Amazon.XRay.Recorder.Core;
 ```
 
-5. At the **Index.cshtml.cs** and **Home.cshtml.cs** insert the following line into the **public async Task OnGetAsync(int id)** method, right after *string expDateStr = expDate.ToString();*.
+5. At the **Index.cshtml.cs** and **Customers.cshtml.cs** insert the following line into the **public async Task OnGetAsync(int id)** method, right after *string expDateStr = expDate.ToString();*.
  ```c#
  AWSXRayRecorder.Instance.AddAnnotation("username", username);
  ```

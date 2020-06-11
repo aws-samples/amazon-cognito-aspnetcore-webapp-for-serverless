@@ -22,11 +22,11 @@ using Microsoft.Extensions.Logging.Debug;
 
 namespace WebApp.Pages
 {
-    public class HomeModel : PageModel
+    public class CustomersModel : PageModel
     {
         private readonly ILogger _logger;
 
-        public HomeModel(ILogger<HomeModel> logger)
+        public CustomersModel(ILogger<CustomersModel> logger)
         {
             _logger = logger;
         }

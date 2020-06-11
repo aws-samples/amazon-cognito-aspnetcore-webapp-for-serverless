@@ -8,15 +8,15 @@ The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the ot
 
 1. At this point, you probably have two *Visual Studio Codes* opened; one with the WebApp project, and a second one with the CustomerList project. At the Visual Studio Code, go to *Window* and select the one that contains **WebApp** on its name.
  
-2. From the Visual Studio, create two new files **Home.cshtml** and **Home.cshtml.cs** by right-clicking on the **Pages** directory and selecting **New file**.
+2. From the Visual Studio, create two new files **Customers.cshtml** and **Customers.cshtml.cs** by right-clicking on the **Pages** directory and selecting **New file**.
 
 <img src="../images/vscodenewfile.png" width="600"/>
 
-3. Download the [Home.cshtml](Home.cshtml) file and copy its content to the newly created **Home.cshtml**. Repeat the step for the [Home.cshtml.cs](Home.cshtml.cs) file too. Both files are also accessible at the *lab-4-alltogether* directory in the repo.
+3. Download the [Customers.cshtml](Customers.cshtml) file and copy its content to the newly created **Customers.cshtml**. Repeat the step for the [Customers.cshtml.cs](Customers.cshtml.cs) file too. Both files are also accessible at the *lab-4-alltogether* directory in the repo.
  
 4. Execute ```aws apigateway get-rest-apis --query 'items[*].{name:name,restApiId:id}'``` and search for the result that contains **-CustomerList** in its the name.
-5. Open the **Home.cshtml**. Go to line 35 and replace the **restApiId** value (obtained on the previous step). The excerpt below shows what to look for. Don't forget to replace the **awsRegion** to the region you are running the workshop.
- ```json
+5. Open the **Customers.cshtml**. Go to line 40 and replace the **restApiId** value (obtained on the previous step). The excerpt below shows what to look for. Don't forget to replace the **awsRegion** with the aws region you are running the workshop.
+ ```
  "ajax": {
  "url": "https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/v1",
  "type": "GET",
@@ -33,7 +33,7 @@ The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the ot
  @page
  @model IndexModel
  @{
- ViewData["Title"] = "Home page";
+ ViewData["Title"] = "Customers page";
  }
 
  <h2>Congratulations!!! Your ASP.NET Core Web Application is now Serverless</h2>
@@ -75,9 +75,9 @@ The AspNetCore WebApp connects with Amazon Cognito via OpenId library. On the ot
 
 <img src="../images/indexjwt.png" width="800"/>
 
-4. Access the **home** page that calls the Customer List microservices by adding home at the URL:
+4. Access the **Customers** page that calls the Customer List microservices by adding Customers at the URL:
  ```
- https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/Prod/home
+ https://<restApiId>.execute-api.<awsRegion>.amazonaws.com/Prod/Customers
  ```
 <img src="../images/customerlistpage.png" width="800"/>
 
